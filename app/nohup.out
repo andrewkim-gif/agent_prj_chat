@@ -1,0 +1,209 @@
+
+> app@0.1.0 dev
+> next dev
+
+ ⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of /home/nexus/apps/services/arachat/package-lock.json as the root directory.
+ To silence this warning, set `outputFileTracingRoot` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/output#caveats for more information.
+ Detected additional lockfiles: 
+   * /home/nexus/apps/services/arachat/app/package-lock.json
+
+ ⚠ Port 3000 is in use by an unknown process, using available port 3001 instead.
+   ▲ Next.js 15.5.3
+   - Local:        http://localhost:3001
+   - Network:      http://10.100.100.10:3001
+   - Environments: .env.local
+
+ ✓ Starting...
+ ✓ Ready in 1065ms
+ ○ Compiling / ...
+ ⚠ ./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/hooks/useBlockchainWallet.ts
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/hooks'
+
+Import trace for requested module:
+./src/hooks/useBlockchainWallet.ts
+./src/components/chat/ChatSidebar.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+ GET / 200 in 3058ms
+ ⚠ ./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/hooks/useBlockchainWallet.ts
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/hooks'
+
+Import trace for requested module:
+./src/hooks/useBlockchainWallet.ts
+./src/components/chat/ChatSidebar.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+ ⚠ ./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/hooks/useBlockchainWallet.ts
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/hooks'
+
+Import trace for requested module:
+./src/hooks/useBlockchainWallet.ts
+./src/components/chat/ChatSidebar.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Clock' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/components/ui/icon.tsx
+Attempted import error: 'Gamepad' is not exported from '@mynaui/icons-react' (imported as 'MynaIcons').
+
+Import trace for requested module:
+./src/components/ui/icon.tsx
+./src/app/page.tsx
+
+./src/providers/CrossSDKProvider.tsx
+Module not found: Can't resolve '@to-nexus/sdk' in '/home/nexus/apps/services/arachat/app/src/providers'
+
+Import trace for requested module:
+./src/providers/CrossSDKProvider.tsx
+ GET /favicon.ico 200 in 597ms
+ GET /favicon.ico 200 in 5ms
+ ⚠ Cross origin request detected from ara-app.to.nexus to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+[?25h

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross Wallet Network Test & Verification</title>
+    <style>
+        body { font-family: monospace; padding: 20px; max-width: 1200px; margin: 0 auto; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007bff; background: #f8f9fa; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .comparison { border: 1px solid #ddd; padding: 15px; border-radius: 4px; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; white-space: pre-wrap; }
+        button { margin: 5px; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; }
+        .btn-primary { background: #007bff; color: white; }
+        .btn-success { background: #28a745; color: white; }
+        .btn-warning { background: #ffc107; color: black; }
+        .btn-danger { background: #dc3545; color: white; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Cross Wallet Network Test & Data Verification</h1>
+
+    <div class="section">
+        <h3>🎯 Purpose: Verify Testnet vs Mainnet Data Separation</h3>
+        <p>This tool will test if Cross Wallet extension properly separates testnet and mainnet data.</p>
+        <p><strong>Expected Behavior</strong>:</p>
+        <ul>
+            <li>Testnet should show testnet-specific tokens and prices</li>
+            <li>Mainnet should show mainnet-specific tokens and prices</li>
+            <li>Network switching should change the available token data</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3>🔧 Network Control</h3>
+        <button class="btn-primary" onclick="switchToTestnet()">🧪 Switch to Testnet (4158)</button>
+        <button class="btn-success" onclick="switchToMainnet()">🌐 Switch to Mainnet (4157)</button>
+        <button class="btn-warning" onclick="getCurrentNetwork()">📊 Check Current Network</button>
+        <button class="btn-danger" onclick="clearResults()">🗑️ Clear Results</button>
+    </div>
+
+    <div class="section">
+        <h3>📊 Network Status & Data Comparison</h3>
+        <div id="network-status"></div>
+    </div>
+
+    <div class="grid">
+        <div class="comparison">
+            <h4>🧪 Testnet Data (Chain ID: 4158)</h4>
+            <div id="testnet-data">
+                <p><em>Click "Test Testnet Data" to load...</em></p>
+            </div>
+            <button class="btn-primary" onclick="testTestnetData()">🧪 Test Testnet Data</button>
+        </div>
+
+        <div class="comparison">
+            <h4>🌐 Mainnet Data (Chain ID: 4157)</h4>
+            <div id="mainnet-data">
+                <p><em>Click "Test Mainnet Data" to load...</em></p>
+            </div>
+            <button class="btn-success" onclick="testMainnetData()">🌐 Test Mainnet Data</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h3>🔍 Detailed Test Results</h3>
+        <div id="detailed-results"></div>
+    </div>
+
+    <div class="section">
+        <h3>📋 Test Log</h3>
+        <div id="test-log"></div>
+    </div>
+
+    <script>
+        let testResults = {
+            testnet: null,
+            mainnet: null,
+            currentNetwork: null
+        };
+
+        function log(message, type = 'info') {
+            console.log(message);
+            const logDiv = document.getElementById('test-log');
+            const p = document.createElement('p');
+            p.className = type;
+            p.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(p);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('test-log').innerHTML = '';
+            document.getElementById('testnet-data').innerHTML = '<p><em>Cleared. Click "Test Testnet Data" to reload...</em></p>';
+            document.getElementById('mainnet-data').innerHTML = '<p><em>Cleared. Click "Test Mainnet Data" to reload...</em></p>';
+            document.getElementById('detailed-results').innerHTML = '';
+            testResults = { testnet: null, mainnet: null, currentNetwork: null };
+        }
+
+        async function getCurrentNetwork() {
+            log('🔍 Checking current network status...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet extension not available', 'error');
+                updateNetworkStatus('❌ Cross Wallet: Not Available');
+                return null;
+            }
+
+            try {
+                const chainId = await window.cross.getChainId();
+                const networkName = chainId === 4158 ? 'Testnet' : chainId === 4157 ? 'Mainnet' : 'Unknown';
+
+                log(`📊 Current network: ${networkName} (Chain ID: ${chainId})`, 'success');
+                updateNetworkStatus(`✅ Current Network: ${networkName} (Chain ID: ${chainId})`);
+
+                testResults.currentNetwork = { chainId, networkName };
+                return { chainId, networkName };
+            } catch (error) {
+                log(`❌ Error getting network: ${error.message}`, 'error');
+                updateNetworkStatus(`❌ Error: ${error.message}`);
+                return null;
+            }
+        }
+
+        function updateNetworkStatus(status) {
+            document.getElementById('network-status').innerHTML = `<h4>${status}</h4>`;
+        }
+
+        async function switchToTestnet() {
+            log('🔄 Attempting to switch to Testnet (Chain ID: 4158)...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available for network switching', 'error');
+                return;
+            }
+
+            try {
+                if (typeof window.cross.switchChain === 'function') {
+                    await window.cross.switchChain(4158);
+                    log('✅ Successfully requested switch to Testnet', 'success');
+
+                    // Wait and verify
+                    setTimeout(async () => {
+                        const current = await getCurrentNetwork();
+                        if (current?.chainId === 4158) {
+                            log('✅ Confirmed: Successfully switched to Testnet', 'success');
+                        } else {
+                            log(`⚠️ Switch may have failed. Current chainId: ${current?.chainId}`, 'warning');
+                        }
+                    }, 2000);
+                } else {
+                    log('❌ switchChain method not available in Cross Wallet', 'error');
+                    log('💡 Please manually switch to Testnet in Cross Wallet extension', 'info');
+                }
+            } catch (error) {
+                log(`❌ Failed to switch to Testnet: ${error.message}`, 'error');
+            }
+        }
+
+        async function switchToMainnet() {
+            log('🔄 Attempting to switch to Mainnet (Chain ID: 4157)...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available for network switching', 'error');
+                return;
+            }
+
+            try {
+                if (typeof window.cross.switchChain === 'function') {
+                    await window.cross.switchChain(4157);
+                    log('✅ Successfully requested switch to Mainnet', 'success');
+
+                    // Wait and verify
+                    setTimeout(async () => {
+                        const current = await getCurrentNetwork();
+                        if (current?.chainId === 4157) {
+                            log('✅ Confirmed: Successfully switched to Mainnet', 'success');
+                        } else {
+                            log(`⚠️ Switch may have failed. Current chainId: ${current?.chainId}`, 'warning');
+                        }
+                    }, 2000);
+                } else {
+                    log('❌ switchChain method not available in Cross Wallet', 'error');
+                    log('💡 Please manually switch to Mainnet in Cross Wallet extension', 'info');
+                }
+            } catch (error) {
+                log(`❌ Failed to switch to Mainnet: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTestnetData() {
+            log('🧪 Testing Testnet data retrieval...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available', 'error');
+                document.getElementById('testnet-data').innerHTML = '<p class="error">❌ Cross Wallet not available</p>';
+                return;
+            }
+
+            try {
+                // Ensure we're on testnet first
+                const currentNetwork = await getCurrentNetwork();
+                if (currentNetwork?.chainId !== 4158) {
+                    log('⚠️ Not on testnet, attempting to switch...', 'warning');
+                    await switchToTestnet();
+                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for switch
+                }
+
+                // Test token list with chainId parameter
+                let tokens = [];
+                try {
+                    tokens = await window.cross.getTokenList({ chainId: 4158 });
+                    log(`📋 Testnet tokens (with chainId): ${tokens.length} found`, 'success');
+                } catch (paramError) {
+                    log(`⚠️ chainId parameter not supported, trying without...`, 'warning');
+                    tokens = await window.cross.getTokenList();
+                    log(`📋 Testnet tokens (without chainId): ${tokens.length} found`, 'info');
+                }
+
+                // Test sample token prices
+                const sampleResults = [];
+                for (let i = 0; i < Math.min(3, tokens.length); i++) {
+                    const token = tokens[i];
+                    try {
+                        let priceInfo;
+                        try {
+                            priceInfo = await window.cross.getTokenPrice(token.symbol, { chainId: 4158 });
+                        } catch (paramError) {
+                            priceInfo = await window.cross.getTokenPrice(token.symbol);
+                        }
+
+                        sampleResults.push({
+                            symbol: token.symbol,
+                            name: token.name,
+                            price: priceInfo.price || '0',
+                            currency: priceInfo.currency || 'USD'
+                        });
+
+                        log(`💰 ${token.symbol}: $${priceInfo.price || '0'}`, 'info');
+                    } catch (priceError) {
+                        log(`⚠️ Could not get price for ${token.symbol}: ${priceError.message}`, 'warning');
+                        sampleResults.push({
+                            symbol: token.symbol,
+                            name: token.name,
+                            price: 'N/A',
+                            error: priceError.message
+                        });
+                    }
+                }
+
+                testResults.testnet = {
+                    chainId: 4158,
+                    tokenCount: tokens.length,
+                    sampleTokens: sampleResults,
+                    timestamp: new Date().toISOString()
+                };
+
+                displayTestnetResults(testResults.testnet);
+                compareResults();
+
+            } catch (error) {
+                log(`❌ Testnet data test failed: ${error.message}`, 'error');
+                document.getElementById('testnet-data').innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        async function testMainnetData() {
+            log('🌐 Testing Mainnet data retrieval...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available', 'error');
+                document.getElementById('mainnet-data').innerHTML = '<p class="error">❌ Cross Wallet not available</p>';
+                return;
+            }
+
+            try {
+                // Ensure we're on mainnet first
+                const currentNetwork = await getCurrentNetwork();
+                if (currentNetwork?.chainId !== 4157) {
+                    log('⚠️ Not on mainnet, attempting to switch...', 'warning');
+                    await switchToMainnet();
+                    await new Promise(resolve => setTimeout(resolve, 3000)); // Wait for switch
+                }
+
+                // Test token list with chainId parameter
+                let tokens = [];
+                try {
+                    tokens = await window.cross.getTokenList({ chainId: 4157 });
+                    log(`📋 Mainnet tokens (with chainId): ${tokens.length} found`, 'success');
+                } catch (paramError) {
+                    log(`⚠️ chainId parameter not supported, trying without...`, 'warning');
+                    tokens = await window.cross.getTokenList();
+                    log(`📋 Mainnet tokens (without chainId): ${tokens.length} found`, 'info');
+                }
+
+                // Test sample token prices
+                const sampleResults = [];
+                for (let i = 0; i < Math.min(3, tokens.length); i++) {
+                    const token = tokens[i];
+                    try {
+                        let priceInfo;
+                        try {
+                            priceInfo = await window.cross.getTokenPrice(token.symbol, { chainId: 4157 });
+                        } catch (paramError) {
+                            priceInfo = await window.cross.getTokenPrice(token.symbol);
+                        }
+
+                        sampleResults.push({
+                            symbol: token.symbol,
+                            name: token.name,
+                            price: priceInfo.price || '0',
+                            currency: priceInfo.currency || 'USD'
+                        });
+
+                        log(`💰 ${token.symbol}: $${priceInfo.price || '0'}`, 'info');
+                    } catch (priceError) {
+                        log(`⚠️ Could not get price for ${token.symbol}: ${priceError.message}`, 'warning');
+                        sampleResults.push({
+                            symbol: token.symbol,
+                            name: token.name,
+                            price: 'N/A',
+                            error: priceError.message
+                        });
+                    }
+                }
+
+                testResults.mainnet = {
+                    chainId: 4157,
+                    tokenCount: tokens.length,
+                    sampleTokens: sampleResults,
+                    timestamp: new Date().toISOString()
+                };
+
+                displayMainnetResults(testResults.mainnet);
+                compareResults();
+
+            } catch (error) {
+                log(`❌ Mainnet data test failed: ${error.message}`, 'error');
+                document.getElementById('mainnet-data').innerHTML = `<p class="error">❌ Error: ${error.message}</p>`;
+            }
+        }
+
+        function displayTestnetResults(data) {
+            const html = `
+                <h5>✅ Testnet Results (Chain ID: ${data.chainId})</h5>
+                <p><strong>Total Tokens:</strong> ${data.tokenCount}</p>
+                <p><strong>Sample Tokens:</strong></p>
+                <ul>
+                    ${data.sampleTokens.map(token =>
+                        `<li><strong>${token.symbol}</strong> (${token.name}): ${token.error ? `Error: ${token.error}` : `$${token.price}`}</li>`
+                    ).join('')}
+                </ul>
+                <p><em>Tested at: ${new Date(data.timestamp).toLocaleString()}</em></p>
+            `;
+            document.getElementById('testnet-data').innerHTML = html;
+        }
+
+        function displayMainnetResults(data) {
+            const html = `
+                <h5>✅ Mainnet Results (Chain ID: ${data.chainId})</h5>
+                <p><strong>Total Tokens:</strong> ${data.tokenCount}</p>
+                <p><strong>Sample Tokens:</strong></p>
+                <ul>
+                    ${data.sampleTokens.map(token =>
+                        `<li><strong>${token.symbol}</strong> (${token.name}): ${token.error ? `Error: ${token.error}` : `$${token.price}`}</li>`
+                    ).join('')}
+                </ul>
+                <p><em>Tested at: ${new Date(data.timestamp).toLocaleString()}</em></p>
+            `;
+            document.getElementById('mainnet-data').innerHTML = html;
+        }
+
+        function compareResults() {
+            if (!testResults.testnet || !testResults.mainnet) {
+                return; // Need both results to compare
+            }
+
+            const analysis = [];
+
+            // Compare token counts
+            if (testResults.testnet.tokenCount === testResults.mainnet.tokenCount) {
+                analysis.push(`⚠️ <strong>Same token count</strong>: Both networks show ${testResults.testnet.tokenCount} tokens (potential issue)`);
+            } else {
+                analysis.push(`✅ <strong>Different token counts</strong>: Testnet: ${testResults.testnet.tokenCount}, Mainnet: ${testResults.mainnet.tokenCount}`);
+            }
+
+            // Compare token symbols
+            const testnetSymbols = testResults.testnet.sampleTokens.map(t => t.symbol).join(', ');
+            const mainnetSymbols = testResults.mainnet.sampleTokens.map(t => t.symbol).join(', ');
+
+            if (testnetSymbols === mainnetSymbols) {
+                analysis.push(`⚠️ <strong>Same token symbols</strong>: Both show ${testnetSymbols} (potential issue)`);
+            } else {
+                analysis.push(`✅ <strong>Different token symbols</strong>: Testnet: [${testnetSymbols}], Mainnet: [${mainnetSymbols}]`);
+            }
+
+            // Compare prices
+            const priceComparisons = [];
+            testResults.testnet.sampleTokens.forEach(testnetToken => {
+                const mainnetToken = testResults.mainnet.sampleTokens.find(t => t.symbol === testnetToken.symbol);
+                if (mainnetToken) {
+                    if (testnetToken.price === mainnetToken.price && testnetToken.price !== 'N/A') {
+                        priceComparisons.push(`⚠️ ${testnetToken.symbol}: Same price ($${testnetToken.price}) on both networks`);
+                    } else {
+                        priceComparisons.push(`✅ ${testnetToken.symbol}: Testnet $${testnetToken.price}, Mainnet $${mainnetToken.price}`);
+                    }
+                }
+            });
+
+            if (priceComparisons.length > 0) {
+                analysis.push('<strong>Price Comparisons:</strong><ul>' + priceComparisons.map(p => `<li>${p}</li>`).join('') + '</ul>');
+            }
+
+            // Overall assessment
+            const issues = analysis.filter(a => a.includes('⚠️')).length;
+            if (issues === 0) {
+                analysis.unshift('🎉 <strong>GOOD:</strong> Networks appear to have properly separated data');
+            } else {
+                analysis.unshift(`🚨 <strong>POTENTIAL ISSUE:</strong> Found ${issues} potential data separation problems`);
+            }
+
+            document.getElementById('detailed-results').innerHTML = `
+                <h4>📊 Data Separation Analysis</h4>
+                ${analysis.map(item => `<p>${item}</p>`).join('')}
+            `;
+
+            log(`📊 Analysis complete: ${issues === 0 ? 'Networks properly separated' : `${issues} potential issues found`}`, issues === 0 ? 'success' : 'warning');
+        }
+
+        // Auto-check network status on load
+        window.addEventListener('load', () => {
+            setTimeout(getCurrentNetwork, 1000);
+        });
+
+        // Auto-refresh network status every 15 seconds
+        setInterval(getCurrentNetwork, 15000);
+    </script>
+</body>
+</html>

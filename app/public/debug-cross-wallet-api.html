@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross Wallet API Debug</title>
+</head>
+<body>
+    <h1>Cross Wallet API Debug</h1>
+    <div id="results"></div>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function log(message) {
+            console.log(message);
+            results.innerHTML += `<p>${message}</p>`;
+        }
+
+        async function debugCrossWalletAPI() {
+            log('🔍 Cross Wallet API Debug Started');
+
+            // Check if Cross Wallet is available
+            if (typeof window.cross === 'undefined') {
+                log('❌ window.cross is not available');
+                log('💡 Cross Wallet extension might not be installed');
+                return;
+            }
+
+            log('✅ window.cross is available');
+
+            try {
+                // Check available methods
+                log('📋 Available methods:');
+                const methods = Object.getOwnPropertyNames(window.cross);
+                methods.forEach(method => {
+                    if (typeof window.cross[method] === 'function') {
+                        log(`  - ${method}()`);
+                    }
+                });
+
+                // Test getTokenList with different parameters
+                log('🧪 Testing getTokenList() with different parameters...');
+
+                // Test 1: No parameters
+                try {
+                    const tokens1 = await window.cross.getTokenList();
+                    log(`✅ getTokenList() (no params): ${tokens1.length} tokens`);
+                } catch (e) {
+                    log(`❌ getTokenList() (no params): ${e.message}`);
+                }
+
+                // Test 2: With chainId object
+                try {
+                    const tokens2 = await window.cross.getTokenList({ chainId: 4157 });
+                    log(`✅ getTokenList({chainId: 4157}): ${tokens2.length} tokens`);
+                } catch (e) {
+                    log(`❌ getTokenList({chainId: 4157}): ${e.message}`);
+                }
+
+                // Test 3: With chainId 4158
+                try {
+                    const tokens3 = await window.cross.getTokenList({ chainId: 4158 });
+                    log(`✅ getTokenList({chainId: 4158}): ${tokens3.length} tokens`);
+                } catch (e) {
+                    log(`❌ getTokenList({chainId: 4158}): ${e.message}`);
+                }
+
+                // Test current chainId
+                try {
+                    const currentChainId = await window.cross.getChainId();
+                    log(`🌐 Current chainId: ${currentChainId}`);
+                } catch (e) {
+                    log(`❌ getChainId(): ${e.message}`);
+                }
+
+            } catch (error) {
+                log(`❌ Error during API testing: ${error.message}`);
+            }
+        }
+
+        // Run debug when page loads
+        window.addEventListener('load', () => {
+            setTimeout(debugCrossWalletAPI, 1000); // Wait 1 second for Cross Wallet to load
+        });
+    </script>
+</body>
+</html>

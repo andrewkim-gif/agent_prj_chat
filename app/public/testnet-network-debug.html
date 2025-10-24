@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Testnet Network Debug</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Testnet Network Debug</h1>
+    <div id="results"></div>
+
+    <button onclick="runFullDiagnostic()">🔄 Run Full Diagnostic</button>
+    <button onclick="attemptTestnetConnection()">🧪 Try Connect to Testnet</button>
+    <button onclick="clearResults()">🗑️ Clear Results</button>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function log(message, type = 'info') {
+            console.log(message);
+            const p = document.createElement('p');
+            p.className = type;
+            p.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            results.appendChild(p);
+            results.scrollTop = results.scrollHeight;
+        }
+
+        function clearResults() {
+            results.innerHTML = '';
+        }
+
+        async function runFullDiagnostic() {
+            log('🔍 Starting Full Network Diagnostic...', 'info');
+
+            // 1. Check Cross Wallet Extension
+            log('=== Cross Wallet Extension Check ===', 'info');
+            if (window.cross) {
+                log('✅ window.cross is available', 'success');
+
+                try {
+                    const chainId = await window.cross.getChainId();
+                    log(`📊 Current chainId: ${chainId}`, 'info');
+
+                    if (chainId === 4158) {
+                        log('✅ Cross Wallet is on testnet (4158)', 'success');
+                    } else if (chainId === 4157) {
+                        log('⚠️ Cross Wallet is on mainnet (4157)', 'warning');
+                    } else {
+                        log(`❓ Unknown chainId: ${chainId}`, 'warning');
+                    }
+                } catch (error) {
+                    log(`❌ Error getting chainId: ${error.message}`, 'error');
+                }
+            } else {
+                log('❌ window.cross not available - Cross Wallet extension not installed or not loaded', 'error');
+            }
+
+            // 2. Check Cross SDK Network Configuration
+            log('=== Cross SDK Network Configuration ===', 'info');
+            if (window.crossSdkReady) {
+                log('✅ Cross SDK is ready', 'success');
+                log(`📊 Cross SDK Network: ${window.crossSdkNetwork || 'undefined'}`, 'info');
+            } else {
+                log('❌ Cross SDK not ready', 'error');
+            }
+
+            // 3. Check Network Store
+            log('=== Network Store Check ===', 'info');
+            if (window.useNetworkStore) {
+                log('✅ Network store available', 'success');
+                const state = window.useNetworkStore.getState();
+                log(`📊 Current Network: ${state.currentNetwork}`, 'info');
+                log(`📊 Switching: ${state.switchingNetwork}`, 'info');
+                log(`📊 Connected: ${state.connected}`, 'info');
+                if (state.networkError) {
+                    log(`❌ Network Error: ${state.networkError}`, 'error');
+                }
+            } else {
+                log('❌ Network store not available', 'error');
+            }
+
+            // 4. Test API Calls
+            log('=== API Test ===', 'info');
+            await testApiCalls();
+
+            log('✅ Full diagnostic complete', 'success');
+        }
+
+        async function testApiCalls() {
+            if (!window.cross) {
+                log('❌ Cannot test API calls - window.cross not available', 'error');
+                return;
+            }
+
+            try {
+                // Test 1: getTokenList without parameters
+                log('🧪 Testing getTokenList() without parameters...', 'info');
+                const defaultTokens = await window.cross.getTokenList();
+                log(`📋 Default tokens: ${defaultTokens.length} found`, 'success');
+
+                // Test 2: getTokenList with testnet chainId
+                log('🧪 Testing getTokenList() with testnet chainId 4158...', 'info');
+                try {
+                    const testnetTokens = await window.cross.getTokenList({ chainId: 4158 });
+                    log(`📋 Testnet tokens (4158): ${testnetTokens.length} found`, 'success');
+                    if (testnetTokens.length > 0) {
+                        log(`🔍 Sample testnet token: ${JSON.stringify(testnetTokens[0], null, 2)}`, 'info');
+                    }
+                } catch (paramError) {
+                    log(`⚠️ chainId parameter not supported: ${paramError.message}`, 'warning');
+                }
+
+                // Test 3: getTokenList with mainnet chainId
+                log('🧪 Testing getTokenList() with mainnet chainId 4157...', 'info');
+                try {
+                    const mainnetTokens = await window.cross.getTokenList({ chainId: 4157 });
+                    log(`📋 Mainnet tokens (4157): ${mainnetTokens.length} found`, 'success');
+                    if (mainnetTokens.length > 0) {
+                        log(`🔍 Sample mainnet token: ${JSON.stringify(mainnetTokens[0], null, 2)}`, 'info');
+                    }
+                } catch (paramError) {
+                    log(`⚠️ chainId parameter not supported: ${paramError.message}`, 'warning');
+                }
+
+            } catch (error) {
+                log(`❌ API test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function attemptTestnetConnection() {
+            log('🧪 Attempting to connect to testnet...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available - please install and enable Cross Wallet extension', 'error');
+                return;
+            }
+
+            try {
+                // Try to switch to testnet chainId 4158
+                log('🔄 Attempting to switch to testnet (chainId: 4158)...', 'info');
+
+                // Check if switchChain method exists
+                if (typeof window.cross.switchChain === 'function') {
+                    await window.cross.switchChain(4158);
+                    log('✅ Successfully switched to testnet via switchChain', 'success');
+                } else {
+                    log('⚠️ switchChain method not available', 'warning');
+                }
+
+                // Verify current chainId
+                const chainId = await window.cross.getChainId();
+                if (chainId === 4158) {
+                    log('✅ Successfully connected to testnet', 'success');
+
+                    // Test token list on testnet
+                    const tokens = await window.cross.getTokenList();
+                    log(`📋 Testnet tokens available: ${tokens.length}`, 'success');
+
+                } else {
+                    log(`❌ Still on chainId ${chainId}, not testnet (4158)`, 'error');
+                }
+
+            } catch (error) {
+                log(`❌ Failed to connect to testnet: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run diagnostic on load
+        window.addEventListener('load', () => {
+            setTimeout(runFullDiagnostic, 1000);
+        });
+    </script>
+</body>
+</html>

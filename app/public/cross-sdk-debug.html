@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross SDK Debug</title>
+</head>
+<body>
+    <h1>Cross SDK Debug</h1>
+    <div id="results"></div>
+    <button onclick="debugCrossSDK()">Debug Cross SDK</button>
+    <button onclick="switchToTestnet()">Switch to Testnet</button>
+    <button onclick="switchToMainnet()">Switch to Mainnet</button>
+
+    <script>
+        const results = document.getElementById('results');
+
+        function log(message) {
+            console.log(message);
+            results.innerHTML += `<p>${message}</p>`;
+        }
+
+        function debugCrossSDK() {
+            log('🔍 Cross SDK Debug Started');
+
+            // Check window.cross
+            if (window.cross) {
+                log('✅ window.cross is available');
+
+                // Get current chain ID
+                window.cross.getChainId().then(chainId => {
+                    log(`📊 Current chainId: ${chainId}`);
+
+                    // Test token list
+                    return window.cross.getTokenList();
+                }).then(tokens => {
+                    log(`📋 Tokens: ${tokens.length} found`);
+                    log(`Sample tokens: ${JSON.stringify(tokens.slice(0, 2), null, 2)}`);
+                }).catch(error => {
+                    log(`❌ Error: ${error.message}`);
+                });
+            } else {
+                log('❌ window.cross not available');
+            }
+
+            // Check Cross SDK objects
+            if (window.crossMainnet) {
+                log('✅ window.crossMainnet available');
+            } else {
+                log('❌ window.crossMainnet not available');
+            }
+
+            if (window.crossTestnet) {
+                log('✅ window.crossTestnet available');
+            } else {
+                log('❌ window.crossTestnet not available');
+            }
+        }
+
+        function switchToTestnet() {
+            log('🧪 Switching to testnet...');
+            // Trigger network store switch
+            if (window.useNetworkStore) {
+                window.useNetworkStore.getState().switchNetwork('cross-testnet');
+                log('✅ Testnet switch triggered');
+            } else {
+                log('❌ Network store not available');
+            }
+        }
+
+        function switchToMainnet() {
+            log('🌐 Switching to mainnet...');
+            // Trigger network store switch
+            if (window.useNetworkStore) {
+                window.useNetworkStore.getState().switchNetwork('cross-mainnet');
+                log('✅ Mainnet switch triggered');
+            } else {
+                log('❌ Network store not available');
+            }
+        }
+
+        // Auto debug on load
+        setTimeout(debugCrossSDK, 2000);
+    </script>
+</body>
+</html>

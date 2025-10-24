@@ -1,0 +1,392 @@
+{
+  "website_info": {
+    "title": "Beautiful themes for shadcn/ui — tweakcn | Theme Editor & Generator",
+    "url": "https://tweakcn.com/",
+    "description": "shadcn/ui 테마 편집기 및 생성기",
+    "viewport": {
+      "width": 1201,
+      "height": 854
+    }
+  },
+  
+  "design_system": {
+    "framework": "Tailwind CSS v4 & v3 지원",
+    "ui_library": "shadcn/ui",
+    "component_library": "React 컴포넌트",
+    "color_system": "CSS Custom Properties with Tailwind"
+  },
+
+  "color_palette": {
+    "primary_colors": {
+      "background": "rgb(255, 255, 255)",
+      "foreground": "rgb(10, 10, 10)",
+      "primary": "rgb(23, 23, 23)",
+      "primary_foreground": "rgb(250, 250, 250)",
+      "secondary": "rgb(245, 245, 245)",
+      "secondary_foreground": "rgb(23, 23, 23)",
+      "muted": "rgb(245, 245, 245)",
+      "muted_foreground": "rgb(115, 115, 115)",
+      "accent": "rgb(245, 245, 245)",
+      "accent_foreground": "rgb(23, 23, 23)"
+    },
+    "semantic_colors": {
+      "border": "rgb(229, 229, 229)",
+      "input": "rgb(229, 229, 229)",
+      "ring": "rgb(23, 23, 23)",
+      "destructive": "rgb(255, 51, 51)",
+      "destructive_foreground": "rgb(255, 255, 255)"
+    },
+    "advanced_colors": [
+      "lab(55.4814 75.0732 48.8528)",
+      "lab(76.3898 14.5258 98.4589)",
+      "lab(70.5521 -66.5147 45.8073)",
+      "oklab(0.204979 0.00000929832 0.00000409782 / 0.1)",
+      "oklab(0.144999 0.00000660866 0.00000289828 / 0.9)",
+      "oklab(0.555965 0.0000253916 0.0000111163 / 0.6)"
+    ]
+  },
+
+  "typography": {
+    "font_families": [
+      "ui-sans-serif, system-ui, -apple-system, \"system-ui\", \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, \"Noto Sans\", sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+      "ui-serif, Georgia, Cambria, \"Times New Roman\", Times, serif"
+    ],
+    "google_fonts": [
+      "Architects Daughter",
+      "DM Sans",
+      "Fira Code",
+      "Geist Mono",
+      "Geist",
+      "IBM Plex Mono",
+      "IBM Plex Sans",
+      "Inter",
+      "JetBrains Mono",
+      "Libre Baskerville",
+      "Lora",
+      "Merriweather",
+      "Montserrat",
+      "Open Sans",
+      "Outfit",
+      "Oxanium",
+      "Playfair Display",
+      "Plus Jakarta Sans",
+      "Poppins",
+      "Roboto Mono",
+      "Roboto",
+      "Source Code Pro",
+      "Source Serif 4",
+      "Space Grotesk",
+      "Space Mono"
+    ],
+    "font_sizes": ["12px", "14px", "16px", "18px", "20px", "36px", "60px"],
+    "font_weights": ["300", "400", "500", "600", "700"],
+    "heading_styles": {
+      "h1": "text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight",
+      "h2": "text-3xl md:text-4xl font-bold tracking-tight",
+      "h3": "text-lg font-semibold"
+    }
+  },
+
+  "layout_structure": {
+    "header": {
+      "position": "sticky top-0",
+      "z_index": "z-50",
+      "background": "bg-transparent backdrop-blur-lg",
+      "height": "64px",
+      "content": ["logo", "navigation", "actions"]
+    },
+    "navigation": {
+      "type": "horizontal",
+      "items": ["Examples", "Features", "Pricing", "Roadmap", "FAQ"],
+      "mobile": "hidden md:flex",
+      "style": "text-muted-foreground hover:text-foreground transition-colors"
+    },
+    "main_sections": [
+      {
+        "name": "hero",
+        "layout": "grid lg:grid-cols-2 gap-12",
+        "padding": "py-20 md:py-32 lg:py-40",
+        "background": "relative isolate"
+      },
+      {
+        "name": "theme_presets",
+        "layout": "w-full",
+        "padding": "py-20 md:py-32",
+        "id": "examples"
+      },
+      {
+        "name": "testimonials",
+        "layout": "grid",
+        "background": "w-full"
+      },
+      {
+        "name": "features",
+        "layout": "grid",
+        "id": "features"
+      },
+      {
+        "name": "pro_features",
+        "layout": "grid lg:grid-cols-2"
+      }
+    ]
+  },
+
+  "components": {
+    "buttons": {
+      "primary": {
+        "base": "inline-flex items-center justify-center gap-2 whitespace-nowrap font-medium",
+        "colors": "bg-primary text-primary-foreground",
+        "hover": "hover:bg-primary/90",
+        "padding": "px-8 py-2 h-12",
+        "border_radius": "rounded-full",
+        "shadow": "shadow-md",
+        "transitions": "transition-transform duration-300 hover:translate-y-[-2px] hover:shadow-lg"
+      },
+      "secondary": {
+        "base": "inline-flex items-center justify-center gap-2 whitespace-nowrap",
+        "colors": "bg-secondary text-secondary-foreground",
+        "hover": "hover:bg-secondary/80",
+        "padding": "px-4 py-2 h-9",
+        "border_radius": "rounded-md",
+        "shadow": "shadow-sm"
+      },
+      "ghost": {
+        "base": "inline-flex items-center justify-center gap-2 whitespace-nowrap",
+        "colors": "hover:bg-accent hover:text-accent-foreground",
+        "padding": "px-4 py-2 h-9",
+        "border_radius": "rounded-md",
+        "transitions": "transition-colors"
+      },
+      "icon": {
+        "base": "inline-flex items-center justify-center",
+        "size": "h-9 w-9",
+        "border_radius": "rounded-full",
+        "hover": "hover:scale-105",
+        "transitions": "transition-transform"
+      }
+    },
+    "cards": {
+      "base": {
+        "background": "bg-card text-card-foreground",
+        "border": "border border-border/40 rounded-xl",
+        "shadow": "shadow-lg",
+        "backdrop": "backdrop-blur"
+      },
+      "hero_demo": {
+        "background": "from-background to-background/95 bg-gradient-to-b",
+        "border": "rounded-2xl overflow-hidden",
+        "shadow": "shadow-xl"
+      },
+      "preview": {
+        "background": "from-card/50 to-card/30 bg-gradient-to-b",
+        "container": "@container",
+        "max_height": "max-h-[60vh] md:max-h-[70vh]",
+        "backdrop": "backdrop-blur-sm"
+      }
+    },
+    "theme_preset_buttons": {
+      "base": "flex w-full h-full items-center justify-center relative",
+      "background": "bg-primary/10",
+      "hover": "hover:bg-accent hover:text-accent-foreground hover:shadow-lg",
+      "transitions": "transition-colors duration-200",
+      "content": "flex items-center gap-2.5 text-center",
+      "color_indicators": "w-3 h-3 rounded-sm border (×3)"
+    },
+    "badges": {
+      "feature": {
+        "base": "inline-flex items-center border rounded-full px-4 py-1.5 text-sm font-medium",
+        "colors": "border-transparent bg-secondary text-secondary-foreground",
+        "hover": "hover:bg-secondary/80",
+        "shadow": "shadow-sm"
+      },
+      "sparkle": {
+        "content": "✦",
+        "style": "text-primary mr-1"
+      }
+    }
+  },
+
+  "animations": {
+    "transitions": {
+      "colors": "transition-colors duration-150",
+      "transform": "transition-transform duration-300",
+      "all": "transition-all"
+    },
+    "hover_effects": {
+      "translate_up": "hover:translate-y-[-2px]",
+      "scale": "hover:scale-105",
+      "shadow": "hover:shadow-lg",
+      "opacity": "hover:opacity-80"
+    },
+    "keyframes": {
+      "carousel": "transform: matrix(1, 0, 0, 1, -1051.92, 0)",
+      "fade_in": "opacity and transform animations",
+      "slide_animations": "slideFromBottom, slideToBottom for drawers"
+    }
+  },
+
+  "responsive_design": {
+    "breakpoints": {
+      "sm": "640px",
+      "md": "768px", 
+      "lg": "1024px",
+      "xl": "1280px",
+      "2xl": "1536px"
+    },
+    "patterns": [
+      "hidden md:flex",
+      "lg:gap-8", 
+      "md:py-32",
+      "lg:py-40",
+      "md:max-h-[70vh]",
+      "lg:grid-cols-2",
+      "md:text-5xl lg:text-6xl"
+    ],
+    "container": {
+      "base": "container mx-auto",
+      "padding": "px-4 md:px-6",
+      "max_width": "1024px"
+    }
+  },
+
+  "effects_and_styling": {
+    "backdrop_blur": [
+      "backdrop-blur-lg",
+      "backdrop-blur-sm", 
+      "backdrop-blur"
+    ],
+    "gradients": [
+      "bg-gradient-to-r",
+      "bg-gradient-to-b",
+      "from-background to-background/95",
+      "from-foreground via-foreground/90 to-foreground/70"
+    ],
+    "shadows": [
+      "shadow-sm",
+      "shadow-md", 
+      "shadow-lg",
+      "shadow-xl"
+    ],
+    "borders": [
+      "border",
+      "border-border/40",
+      "border-transparent",
+      "rounded-md",
+      "rounded-lg",
+      "rounded-xl", 
+      "rounded-2xl",
+      "rounded-full"
+    ]
+  },
+
+  "theme_presets": {
+    "categories": [
+      {
+        "name": "row_1",
+        "themes": [
+          "modern minimal", "twitter", "amethyst haze", "catppuccin",
+          "kodama grove", "quantum rose", "elegant luxury", "neo brutalism",
+          "cyberpunk", "caffeine", "midnight bloom", "vintage paper", 
+          "claude", "mono"
+        ]
+      },
+      {
+        "name": "row_2", 
+        "themes": [
+          "violet bloom", "mocha mousse", "notebook", "graphite",
+          "cosmic night", "nature", "amber minimal", "solar dusk",
+          "pastel dreams", "ocean breeze", "candyland", "sunset horizon",
+          "vercel", "soft pop"
+        ]
+      },
+      {
+        "name": "row_3",
+        "themes": [
+          "t3 chat", "bubblegum", "doom 64", "perpetuity", 
+          "tangerine", "bold tech", "supabase", "claymorphism",
+          "clean slate", "retro arcade", "northern lights", "starry night",
+          "darkmatter"
+        ]
+      }
+    ],
+    "carousel_animation": {
+      "type": "infinite scroll",
+      "direction": "horizontal",
+      "transform": "matrix(1, 0, 0, 1, -1051.92, 0)"
+    }
+  },
+
+  "advanced_features": {
+    "ai_integration": {
+      "title": "Generate Themes With AI in Seconds",
+      "description": "Create stunning ready-to-use themes. Just provide an image or text prompt, and our AI does the rest.",
+      "features": ["Theme Preview", "Checkpoint Restoration", "Image Uploads"]
+    },
+    "color_formats": [
+      "oklch", "hsl", "rgb", "hex", "lab"
+    ],
+    "tailwind_support": {
+      "versions": ["v3", "v4"],
+      "features": ["Color formats", "CSS variables", "Component integration"]
+    }
+  },
+
+  "accessibility": {
+    "features": [
+      "focus:outline-none focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring",
+      "Contrast Checker built-in",
+      "Screen reader support",
+      "Keyboard navigation"
+    ],
+    "aria_labels": [
+      "sr-only classes for screen readers",
+      "Proper heading hierarchy",
+      "Alt text for images"
+    ]
+  },
+
+  "performance_optimizations": {
+    "css": [
+      "Tailwind CSS purging",
+      "Critical CSS inlining", 
+      "CSS variables for theming"
+    ],
+    "images": [
+      "Next.js Image optimization",
+      "WebP format support",
+      "Lazy loading"
+    ],
+    "fonts": [
+      "Google Fonts optimization",
+      "Font display swap",
+      "Preload hints"
+    ]
+  },
+
+  "technical_implementation": {
+    "framework": "Next.js",
+    "styling": "Tailwind CSS + CSS-in-JS",
+    "components": "shadcn/ui + Radix UI",
+    "animations": "CSS transitions + transforms",
+    "build_tools": ["Next.js compiler", "PostCSS", "Autoprefixer"],
+    "deployment": "Vercel (추정)"
+  },
+
+  "key_design_principles": {
+    "consistency": "통일된 디자인 시스템 사용",
+    "accessibility": "WCAG 접근성 가이드라인 준수",
+    "performance": "최적화된 로딩과 반응성",
+    "modularity": "재사용 가능한 컴포넌트 구조",
+    "responsiveness": "모든 디바이스에서 완벽한 표시",
+    "user_experience": "직관적이고 부드러운 인터랙션"
+  },
+
+  "unique_styling_patterns": {
+    "gradient_text": "bg-gradient-to-r bg-clip-text text-transparent",
+    "glass_effect": "backdrop-blur-lg bg-transparent",
+    "hover_lift": "hover:translate-y-[-2px] transition-transform duration-300",
+    "subtle_borders": "border-border/40",
+    "layered_shadows": "shadow-md hover:shadow-lg",
+    "smooth_scaling": "hover:scale-105 transition-transform"
+  }
+}

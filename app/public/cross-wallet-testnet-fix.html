@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross Wallet Testnet Fix Guide</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; margin: 40px; max-width: 800px; }
+        .step { background: #f8f9fa; padding: 20px; margin: 20px 0; border-radius: 8px; border-left: 4px solid #007bff; }
+        .success { border-left-color: #28a745; background: #d4edda; }
+        .warning { border-left-color: #ffc107; background: #fff3cd; }
+        .error { border-left-color: #dc3545; background: #f8d7da; }
+        code { background: #e9ecef; padding: 2px 6px; border-radius: 4px; font-family: 'Monaco', monospace; }
+        .button { background: #007bff; color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; margin: 10px 5px; }
+        .button:hover { background: #0056b3; }
+        #status { margin: 20px 0; padding: 20px; border-radius: 8px; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Cross Wallet Testnet Setup Guide</h1>
+
+    <div class="step">
+        <h3>🔍 Current Status</h3>
+        <div id="status">Checking...</div>
+        <button class="button" onclick="checkStatus()">🔄 Refresh Status</button>
+    </div>
+
+    <div class="step">
+        <h3>📋 Step-by-Step Fix</h3>
+
+        <h4>1. Install Cross Wallet Extension</h4>
+        <p>If you don't have Cross Wallet installed:</p>
+        <ul>
+            <li>Visit the Chrome Web Store or Firefox Add-ons</li>
+            <li>Search for "Cross Wallet" and install the official extension</li>
+            <li>Pin the extension to your browser toolbar</li>
+        </ul>
+
+        <h4>2. Check Network in Cross Wallet</h4>
+        <p>Make sure Cross Wallet is on the correct network:</p>
+        <ul>
+            <li>Click the Cross Wallet extension icon</li>
+            <li>Check the current network (should show "Cross Testnet" for testnet)</li>
+            <li>If on wrong network, click the network selector and choose "Cross Testnet"</li>
+        </ul>
+
+        <h4>3. Test Connection</h4>
+        <button class="button" onclick="testConnection()">🧪 Test Cross Wallet Connection</button>
+        <button class="button" onclick="switchToTestnet()">🔄 Switch to Testnet</button>
+        <button class="button" onclick="switchToMainnet()">🔄 Switch to Mainnet</button>
+    </div>
+
+    <div class="step">
+        <h3>🔧 Advanced Diagnostics</h3>
+        <button class="button" onclick="runDiagnostics()">🔍 Run Full Diagnostics</button>
+        <button class="button" onclick="clearLogs()">🗑️ Clear Logs</button>
+
+        <div id="diagnostics" style="margin-top: 20px;"></div>
+    </div>
+
+    <div class="step">
+        <h3>💡 Troubleshooting Tips</h3>
+        <ul>
+            <li><strong>If Cross Wallet shows different tokens:</strong> The network may not have switched properly. Try refreshing the page.</li>
+            <li><strong>If no tokens appear:</strong> Make sure your wallet has a balance on the testnet.</li>
+            <li><strong>If ARA Chat shows wrong network:</strong> Use the network selector in ARA Chat to switch networks.</li>
+            <li><strong>If errors persist:</strong> Try disconnecting and reconnecting your wallet.</li>
+        </ul>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const div = document.getElementById('diagnostics');
+            const p = document.createElement('p');
+            p.style.color = type === 'error' ? 'red' : type === 'success' ? 'green' : type === 'warning' ? 'orange' : 'black';
+            p.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            div.appendChild(p);
+            console.log(message);
+        }
+
+        function clearLogs() {
+            document.getElementById('diagnostics').innerHTML = '';
+        }
+
+        async function checkStatus() {
+            const statusDiv = document.getElementById('status');
+
+            let html = '<h4>System Status:</h4>';
+
+            // Check Cross Wallet
+            if (window.cross) {
+                try {
+                    const chainId = await window.cross.getChainId();
+                    if (chainId === 4158) {
+                        html += '<div class="success">✅ Cross Wallet: Connected to Testnet (4158)</div>';
+                    } else if (chainId === 4157) {
+                        html += '<div class="warning">⚠️ Cross Wallet: Connected to Mainnet (4157)</div>';
+                    } else {
+                        html += `<div class="warning">⚠️ Cross Wallet: Connected to Unknown Network (${chainId})</div>`;
+                    }
+                } catch (error) {
+                    html += '<div class="error">❌ Cross Wallet: Error getting network info</div>';
+                }
+            } else {
+                html += '<div class="error">❌ Cross Wallet: Not available or not connected</div>';
+            }
+
+            // Check ARA Chat Network
+            if (window.useNetworkStore) {
+                const state = window.useNetworkStore.getState();
+                const network = state.currentNetwork;
+                if (network === 'cross-testnet') {
+                    html += '<div class="success">✅ ARA Chat: Set to Testnet</div>';
+                } else if (network === 'cross-mainnet') {
+                    html += '<div class="warning">⚠️ ARA Chat: Set to Mainnet</div>';
+                } else {
+                    html += `<div class="warning">⚠️ ARA Chat: Unknown network (${network})</div>`;
+                }
+            } else {
+                html += '<div class="error">❌ ARA Chat: Network store not available</div>';
+            }
+
+            // Check Cross SDK
+            if (window.crossSdkReady) {
+                html += `<div class="success">✅ Cross SDK: Ready (${window.crossSdkNetwork || 'unknown'})</div>`;
+            } else {
+                html += '<div class="warning">⚠️ Cross SDK: Not ready</div>';
+            }
+
+            statusDiv.innerHTML = html;
+        }
+
+        async function testConnection() {
+            log('🧪 Testing Cross Wallet connection...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available', 'error');
+                return;
+            }
+
+            try {
+                const chainId = await window.cross.getChainId();
+                log(`📊 Current chainId: ${chainId}`, 'info');
+
+                const tokens = await window.cross.getTokenList();
+                log(`📋 Available tokens: ${tokens.length}`, 'success');
+
+                if (tokens.length > 0) {
+                    log(`🔍 Sample token: ${tokens[0].symbol} (${tokens[0].name})`, 'info');
+                }
+
+                // Test with chainId parameter
+                try {
+                    const testnetTokens = await window.cross.getTokenList({ chainId: 4158 });
+                    log(`📋 Testnet tokens (with chainId): ${testnetTokens.length}`, 'success');
+                } catch (paramError) {
+                    log(`⚠️ ChainId parameter not supported: ${paramError.message}`, 'warning');
+                }
+
+            } catch (error) {
+                log(`❌ Connection test failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function switchToTestnet() {
+            log('🔄 Attempting to switch to testnet...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available', 'error');
+                return;
+            }
+
+            try {
+                if (typeof window.cross.switchChain === 'function') {
+                    await window.cross.switchChain(4158);
+                    log('✅ Successfully requested switch to testnet', 'success');
+
+                    // Verify
+                    setTimeout(async () => {
+                        const chainId = await window.cross.getChainId();
+                        if (chainId === 4158) {
+                            log('✅ Confirmed: Now on testnet', 'success');
+                        } else {
+                            log(`⚠️ Still on chainId ${chainId}`, 'warning');
+                        }
+                    }, 1000);
+                } else {
+                    log('❌ switchChain method not available', 'error');
+                    log('💡 Please manually switch network in Cross Wallet extension', 'info');
+                }
+            } catch (error) {
+                log(`❌ Failed to switch to testnet: ${error.message}`, 'error');
+            }
+        }
+
+        async function switchToMainnet() {
+            log('🔄 Attempting to switch to mainnet...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available', 'error');
+                return;
+            }
+
+            try {
+                if (typeof window.cross.switchChain === 'function') {
+                    await window.cross.switchChain(4157);
+                    log('✅ Successfully requested switch to mainnet', 'success');
+
+                    // Verify
+                    setTimeout(async () => {
+                        const chainId = await window.cross.getChainId();
+                        if (chainId === 4157) {
+                            log('✅ Confirmed: Now on mainnet', 'success');
+                        } else {
+                            log(`⚠️ Still on chainId ${chainId}`, 'warning');
+                        }
+                    }, 1000);
+                } else {
+                    log('❌ switchChain method not available', 'error');
+                    log('💡 Please manually switch network in Cross Wallet extension', 'info');
+                }
+            } catch (error) {
+                log(`❌ Failed to switch to mainnet: ${error.message}`, 'error');
+            }
+        }
+
+        async function runDiagnostics() {
+            log('🔍 Running full diagnostics...', 'info');
+
+            // Test all available objects
+            const crossObjects = [];
+            for (const key in window) {
+                if (key.toLowerCase().includes('cross') || key.toLowerCase().includes('nexus')) {
+                    crossObjects.push(key);
+                }
+            }
+
+            log(`🔍 Found Cross-related objects: ${crossObjects.join(', ')}`, 'info');
+
+            // Test Cross Wallet methods
+            if (window.cross) {
+                const methods = Object.getOwnPropertyNames(window.cross).filter(prop =>
+                    typeof window.cross[prop] === 'function'
+                );
+                log(`🔧 Cross Wallet methods: ${methods.join(', ')}`, 'info');
+            }
+
+            await testConnection();
+            await checkStatus();
+        }
+
+        // Auto-check status on load
+        window.addEventListener('load', () => {
+            setTimeout(checkStatus, 1000);
+        });
+
+        // Auto-refresh status every 10 seconds
+        setInterval(checkStatus, 10000);
+    </script>
+</body>
+</html>

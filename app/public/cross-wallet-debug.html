@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cross Wallet Debug</title>
+</head>
+<body>
+    <h1>Cross Wallet Debug Page</h1>
+    <button onclick="checkCrossWallet()">Check Cross Wallet</button>
+    <div id="results"></div>
+
+    <script>
+        function checkCrossWallet() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>Cross Wallet Detection Results:</h2>';
+
+            // Check all possible Cross Wallet objects
+            const possibleNames = ['crossWallet', 'cross', 'Cross', 'CrossWallet'];
+            let found = false;
+
+            results.innerHTML += '<h3>Checking window objects:</h3>';
+
+            possibleNames.forEach(name => {
+                const obj = window[name];
+                if (obj) {
+                    found = true;
+                    results.innerHTML += `<p>✅ Found: window.${name} (type: ${typeof obj})</p>`;
+
+                    if (typeof obj.request === 'function') {
+                        results.innerHTML += `<p>  - Has request method: ✅</p>`;
+                    } else {
+                        results.innerHTML += `<p>  - Has request method: ❌</p>`;
+                    }
+
+                    results.innerHTML += `<p>  - Properties: ${Object.keys(obj).slice(0, 10).join(', ')}</p>`;
+                } else {
+                    results.innerHTML += `<p>❌ Not found: window.${name}</p>`;
+                }
+            });
+
+            if (!found) {
+                results.innerHTML += '<p><strong>❌ No Cross Wallet objects found!</strong></p>';
+                results.innerHTML += '<p>Make sure Cross Wallet extension is installed and enabled.</p>';
+            }
+
+            // Check all window keys for Cross-related objects
+            results.innerHTML += '<h3>Scanning all window keys for Cross-related objects:</h3>';
+            const windowKeys = Object.keys(window);
+            const crossKeys = windowKeys.filter(key =>
+                key.toLowerCase().includes('cross') ||
+                key.toLowerCase().includes('nexus')
+            );
+
+            if (crossKeys.length > 0) {
+                results.innerHTML += `<p>Found ${crossKeys.length} Cross-related keys:</p>`;
+                crossKeys.forEach(key => {
+                    results.innerHTML += `<p>  - ${key}: ${typeof window[key]}</p>`;
+                });
+            } else {
+                results.innerHTML += '<p>No Cross-related keys found in window object.</p>';
+            }
+
+            // Test actual detection function (same as our isAvailable)
+            results.innerHTML += '<h3>Testing isAvailable function:</h3>';
+            const isAvailable = () => {
+                if (typeof window === 'undefined') return false;
+
+                const possibleNames = ['crossWallet', 'cross', 'Cross', 'CrossWallet'];
+
+                for (const name of possibleNames) {
+                    const wallet = window[name];
+                    if (wallet && typeof wallet.request === 'function') {
+                        return true;
+                    }
+                }
+
+                return false;
+            };
+
+            const available = isAvailable();
+            results.innerHTML += `<p>isAvailable() result: ${available ? '✅ Available' : '❌ Unavailable'}</p>`;
+        }
+
+        // Auto-run on page load
+        window.addEventListener('load', checkCrossWallet);
+    </script>
+</body>
+</html>

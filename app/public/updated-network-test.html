@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Updated Network Test - Cross SDK Fix</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .info { color: blue; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; }
+        .section { margin: 20px 0; padding: 15px; border-left: 4px solid #007bff; background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <h1>🔧 Updated Network Test - Cross SDK Fix Verification</h1>
+
+    <div class="section">
+        <h3>🎯 Fixed Implementation Summary</h3>
+        <ul>
+            <li>✅ Changed from <code>initCrossSdkWithParams</code> to <code>initCrossSdk</code></li>
+            <li>✅ Using <code>switchNetwork</code> from <code>useAppKitNetwork</code> hook</li>
+            <li>✅ Imports from <code>@to-nexus/sdk/react</code> instead of main package</li>
+            <li>✅ Single initialization + network switching pattern</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h3>🔍 Real-time Status Check</h3>
+        <div id="status">Checking...</div>
+        <button onclick="runStatusCheck()" style="margin: 10px 0; padding: 8px 16px;">🔄 Refresh Status</button>
+    </div>
+
+    <div class="section">
+        <h3>🧪 Network Switching Test</h3>
+        <button onclick="testNetworkSwitch('cross-testnet')" style="margin: 5px; padding: 8px 16px;">🧪 Switch to Testnet</button>
+        <button onclick="testNetworkSwitch('cross-mainnet')" style="margin: 5px; padding: 8px 16px;">🌐 Switch to Mainnet</button>
+        <button onclick="testTokenQuery()" style="margin: 5px; padding: 8px 16px;">📊 Test Token Query</button>
+    </div>
+
+    <div class="section">
+        <h3>📋 Test Results</h3>
+        <div id="results"></div>
+        <button onclick="clearResults()" style="margin: 10px 0; padding: 8px 16px;">🗑️ Clear Results</button>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            console.log(message);
+            const div = document.getElementById('results');
+            const p = document.createElement('p');
+            p.className = type;
+            p.innerHTML = `[${new Date().toLocaleTimeString()}] ${message}`;
+            div.appendChild(p);
+            div.scrollTop = div.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function runStatusCheck() {
+            const statusDiv = document.getElementById('status');
+            let html = '<h4>🔍 System Status Check:</h4>';
+
+            // Check Cross SDK readiness
+            if (window.crossSdkReady) {
+                html += `<div class="success">✅ Cross SDK: Ready (Network: ${window.crossSdkNetwork || 'unknown'})</div>`;
+            } else {
+                html += '<div class="error">❌ Cross SDK: Not ready</div>';
+            }
+
+            // Check Cross Wallet Extension
+            if (window.cross) {
+                try {
+                    const chainId = await window.cross.getChainId();
+                    if (chainId === 4158) {
+                        html += '<div class="success">✅ Cross Wallet: Connected to Testnet (4158)</div>';
+                    } else if (chainId === 4157) {
+                        html += '<div class="warning">⚠️ Cross Wallet: Connected to Mainnet (4157)</div>';
+                    } else {
+                        html += `<div class="warning">⚠️ Cross Wallet: Unknown Network (${chainId})</div>`;
+                    }
+                } catch (error) {
+                    html += '<div class="error">❌ Cross Wallet: Error getting network</div>';
+                }
+            } else {
+                html += '<div class="error">❌ Cross Wallet: Extension not available</div>';
+            }
+
+            // Check ARA Chat Network Store
+            if (window.useNetworkStore) {
+                const state = window.useNetworkStore.getState();
+                const network = state.currentNetwork;
+                if (network === 'cross-testnet') {
+                    html += '<div class="success">✅ ARA Chat: Set to Testnet</div>';
+                } else if (network === 'cross-mainnet') {
+                    html += '<div class="info">ℹ️ ARA Chat: Set to Mainnet</div>';
+                } else {
+                    html += `<div class="warning">⚠️ ARA Chat: Unknown Network (${network})</div>`;
+                }
+            } else {
+                html += '<div class="error">❌ ARA Chat: Network store not available</div>';
+            }
+
+            statusDiv.innerHTML = html;
+        }
+
+        async function testNetworkSwitch(targetNetwork) {
+            log(`🔄 Testing network switch to: ${targetNetwork}`, 'info');
+
+            if (!window.useNetworkStore) {
+                log('❌ Network store not available', 'error');
+                return;
+            }
+
+            try {
+                // Use ARA Chat's network switching
+                const networkStore = window.useNetworkStore.getState();
+                await networkStore.switchNetwork(targetNetwork);
+
+                log(`✅ Successfully requested switch to ${targetNetwork}`, 'success');
+
+                // Wait and verify
+                setTimeout(async () => {
+                    await runStatusCheck();
+
+                    // Check if Cross Wallet also switched
+                    if (window.cross) {
+                        try {
+                            const chainId = await window.cross.getChainId();
+                            const expectedChainId = targetNetwork === 'cross-testnet' ? 4158 : 4157;
+
+                            if (chainId === expectedChainId) {
+                                log(`✅ Cross Wallet successfully switched to chainId ${chainId}`, 'success');
+                            } else {
+                                log(`⚠️ Cross Wallet still on chainId ${chainId}, expected ${expectedChainId}`, 'warning');
+                            }
+                        } catch (error) {
+                            log(`❌ Error checking Cross Wallet chainId: ${error.message}`, 'error');
+                        }
+                    }
+                }, 2000);
+
+            } catch (error) {
+                log(`❌ Network switch failed: ${error.message}`, 'error');
+            }
+        }
+
+        async function testTokenQuery() {
+            log('📊 Testing token query with current network...', 'info');
+
+            if (!window.cross) {
+                log('❌ Cross Wallet not available for token query', 'error');
+                return;
+            }
+
+            try {
+                // Get current network info
+                const chainId = await window.cross.getChainId();
+                const networkName = chainId === 4158 ? 'Testnet' : chainId === 4157 ? 'Mainnet' : 'Unknown';
+
+                log(`📊 Current network: ${networkName} (chainId: ${chainId})`, 'info');
+
+                // Test token list
+                const tokens = await window.cross.getTokenList();
+                log(`📋 Tokens found: ${tokens.length}`, 'success');
+
+                if (tokens.length > 0) {
+                    log(`🔍 Sample token: ${tokens[0].symbol} - ${tokens[0].name}`, 'info');
+                }
+
+                // Test with chainId parameter (if supported)
+                try {
+                    const tokensWithChainId = await window.cross.getTokenList({ chainId });
+                    log(`📋 Tokens with chainId parameter: ${tokensWithChainId.length}`, 'success');
+                } catch (paramError) {
+                    log(`⚠️ ChainId parameter not supported: ${paramError.message}`, 'warning');
+                }
+
+            } catch (error) {
+                log(`❌ Token query failed: ${error.message}`, 'error');
+            }
+        }
+
+        // Auto-run status check on load
+        window.addEventListener('load', () => {
+            setTimeout(runStatusCheck, 1000);
+        });
+
+        // Auto-refresh every 15 seconds
+        setInterval(runStatusCheck, 15000);
+    </script>
+</body>
+</html>
