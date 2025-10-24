@@ -1,0 +1,194 @@
+{
+  "users": {
+    "newUser": {
+      "type": "first-time",
+      "firstVisit": true,
+      "walletConnected": false,
+      "expectedBehavior": "should see welcome message and tour"
+    },
+    "walletUser": {
+      "type": "wallet-connected",
+      "address": "0x1234567890123456789012345678901234567890",
+      "network": "ethereum",
+      "tokens": [
+        {
+          "symbol": "ETH",
+          "balance": "1.5",
+          "value": "$3,750.00"
+        },
+        {
+          "symbol": "USDC",
+          "balance": "1000.0",
+          "value": "$1,000.00"
+        }
+      ],
+      "expectedBehavior": "should access wallet features"
+    },
+    "premiumUser": {
+      "type": "premium",
+      "tier": "premium",
+      "features": ["advanced-analytics", "priority-support"],
+      "expectedBehavior": "should access premium features"
+    }
+  },
+
+  "conversations": {
+    "basic": {
+      "category": "general",
+      "messages": [
+        "안녕하세요",
+        "ARA에 대해 알려주세요",
+        "블록체인에 대해 설명해주세요"
+      ],
+      "expectedResponses": [
+        "안녕하세요! ARA입니다",
+        "ARA는 AI 어시스턴트",
+        "블록체인은 분산 원장 기술"
+      ]
+    },
+    "wallet": {
+      "category": "blockchain",
+      "messages": [
+        "지갑을 연결하고 싶어요",
+        "내 토큰 잔고를 확인해주세요",
+        "ETH를 전송하는 방법을 알려주세요"
+      ],
+      "expectedResponses": [
+        "지갑 연결을 도와드리겠습니다",
+        "현재 잔고를 확인해드리겠습니다",
+        "토큰 전송 방법을 안내해드리겠습니다"
+      ]
+    },
+    "complex": {
+      "category": "advanced",
+      "messages": [
+        "크로스체인 브릿지에 대해 설명해주세요",
+        "DeFi 프로토콜 사용법을 알려주세요",
+        "NFT 마켓플레이스 추천해주세요"
+      ],
+      "expectedResponses": [
+        "크로스체인 브릿지는",
+        "DeFi 프로토콜은",
+        "NFT 마켓플레이스로는"
+      ]
+    }
+  },
+
+  "quickActions": [
+    {
+      "label": "지갑 연결하기",
+      "action": "wallet-connect",
+      "expectedResult": "wallet connection modal opens"
+    },
+    {
+      "label": "토큰 가격 확인",
+      "action": "token-prices",
+      "expectedResult": "token price information displayed"
+    },
+    {
+      "label": "블록체인 가이드",
+      "action": "blockchain-guide",
+      "expectedResult": "blockchain guide message sent"
+    },
+    {
+      "label": "최신 뉴스",
+      "action": "latest-news",
+      "expectedResult": "latest crypto news displayed"
+    }
+  ],
+
+  "blockchainData": {
+    "ethereum": {
+      "chainId": 1,
+      "name": "Ethereum Mainnet",
+      "currency": "ETH",
+      "rpcUrl": "https://mainnet.infura.io/v3/",
+      "blockExplorer": "https://etherscan.io",
+      "tokens": [
+        {
+          "address": "0xA0b86a33E6441fa69936f42842E38feCe8FB1010",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": 6
+        }
+      ]
+    },
+    "bsc": {
+      "chainId": 56,
+      "name": "BNB Smart Chain",
+      "currency": "BNB",
+      "rpcUrl": "https://bsc-dataseed.binance.org/",
+      "blockExplorer": "https://bscscan.com",
+      "tokens": [
+        {
+          "address": "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+          "symbol": "USDC",
+          "name": "USD Coin",
+          "decimals": 18
+        }
+      ]
+    },
+    "polygon": {
+      "chainId": 137,
+      "name": "Polygon",
+      "currency": "MATIC",
+      "rpcUrl": "https://polygon-rpc.com/",
+      "blockExplorer": "https://polygonscan.com",
+      "tokens": []
+    }
+  },
+
+  "testScenarios": {
+    "chatFlow": {
+      "name": "Basic Chat Flow",
+      "steps": [
+        "Navigate to chat page",
+        "Verify welcome message",
+        "Send test message",
+        "Wait for response",
+        "Verify response received"
+      ],
+      "expectedDuration": "10-15 seconds"
+    },
+    "walletFlow": {
+      "name": "Wallet Connection Flow",
+      "steps": [
+        "Click wallet connect",
+        "Select MetaMask",
+        "Confirm connection",
+        "Verify wallet connected",
+        "Check token balances"
+      ],
+      "expectedDuration": "15-20 seconds"
+    },
+    "insightFlow": {
+      "name": "Insights Dashboard Flow",
+      "steps": [
+        "Navigate to insights page",
+        "Wait for charts to load",
+        "Verify metrics display",
+        "Test filter functionality",
+        "Verify data updates"
+      ],
+      "expectedDuration": "20-25 seconds"
+    }
+  },
+
+  "errorScenarios": {
+    "networkError": {
+      "description": "Simulate network connectivity issues",
+      "mockConditions": ["offline", "slow-3g", "timeout"],
+      "expectedBehavior": "show error message with retry option"
+    },
+    "apiError": {
+      "description": "Simulate API server errors",
+      "mockConditions": ["500-error", "rate-limit", "invalid-response"],
+      "expectedBehavior": "graceful error handling with user feedback"
+    },
+    "walletError": {
+      "description": "Simulate wallet connection issues",
+      "mockConditions": ["wallet-not-found", "user-rejected", "network-mismatch"],
+      "expectedBehavior": "clear error message with troubleshooting steps"
+    }
+  }
+}

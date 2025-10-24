@@ -27,6 +27,15 @@ pids
 coverage/
 *.lcov
 
+# Playwright E2E testing
+test-results/
+playwright-report/
+playwright/.cache/
+tests/e2e/.env.test
+tests/e2e/.env.local
+tests/e2e/test-results/
+tests/e2e/playwright-report/
+
 # nyc test coverage
 .nyc_output
 
